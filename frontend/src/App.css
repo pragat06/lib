@@ -1,0 +1,238 @@
+/* File: src/App.css */
+
+/* --- Global & Auth Container Styles --- */
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+      'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+      sans-serif;
+    background-color: #282c34;
+}
+
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    width: 100%;
+}
+
+/* --- Login/Register/Verify Box Styles --- */
+.auth-box {
+    width: 100%;
+    max-width: 420px;
+    padding: 40px;
+    background-color: #3a3f4a;
+    border-radius: 15px;
+    color: white;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+}
+
+.auth-box h2 {
+    text-align: center;
+    margin-top: 0;
+    margin-bottom: 2rem;
+}
+
+.input-group {
+    margin-bottom: 1.5rem;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: #ccc;
+    font-size: 0.9rem;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #282c34;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box;
+}
+
+.auth-button {
+    width: 100%;
+    padding: 15px;
+    border-radius: 10px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.auth-button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+.auth-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+.switch-form-text {
+    text-align: center;
+    margin-top: 1.5rem;
+    color: #ccc;
+}
+
+.switch-form-text span {
+    color: #00aaff;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+.error-message {
+    color: #ff6961;
+    margin-top: 1rem;
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.success-message {
+    color: #77dd77;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+/* --- Main App/Dashboard Styles --- */
+.app-container {
+    min-height: 100vh;
+    color: white;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 2rem;
+    background-color: #20232a;
+}
+
+.logo h2 { margin: 0; }
+
+.header-user-info {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.info-box {
+    background-color: #3a3f4a;
+    padding: 8px 15px;
+    border-radius: 20px;
+    text-align: right;
+}
+
+.info-label {
+    margin: 0;
+    font-size: 0.7rem;
+    color: #ccc;
+    text-transform: uppercase;
+}
+
+.info-value {
+    margin: 0;
+    font-size: 0.9rem;
+    font-weight: bold;
+    color: white;
+}
+
+.logout-button {
+    padding: 10px 20px;
+    border-radius: 8px;
+    border: 1px solid #ff6961;
+    background-color: transparent;
+    color: #ff6961;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.logout-button:hover {
+    background-color: #ff6961;
+    color: white;
+}
+
+.dashboard {
+    padding: 2rem;
+    text-align: center;
+}
+/* --- Add these styles to the bottom of App.css --- */
+
+/* Header Modifications to add the menu button */
+.app-header {
+    width: 100%; 
+    box-sizing: border-box; 
+    z-index: 900; 
+    position: relative;
+}
+
+.header-left { 
+    display: flex; 
+    align-items: center; 
+    gap: 1.5rem; 
+}
+
+.menu-btn {
+    background: none; 
+    border: none; 
+    color: white; 
+    font-size: 1.5rem; 
+    cursor: pointer;
+}
+
+/* Main Content Area Styling */
+.main-content {
+    padding: 2rem; 
+    transition: margin-left 0.3s ease-in-out; 
+    margin-left: 0;
+}
+
+/* This class gets added to the main content when the sidebar is open */
+.main-content.shifted { 
+    margin-left: 280px; 
+}
+
+/* The dark overlay that covers the page when the sidebar is open */
+.overlay {
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    width: 100%; 
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); 
+    z-index: 999; /* Sits below the sidebar but above the main content */
+}
+/* --- Add these styles to the bottom of App.css --- */
+
+/* Loader (Spinner) Styles */
+.loader {
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #3498db; /* Blue */
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    animation: spin 1s linear infinite;
+    margin: 0 auto; /* Center the spinner inside the button */
+}
+
+/* The spinning animation */
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Optional: Make the button a bit taller when the loader is active */
+.auth-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+    min-height: 51px; /* Matches the button's default height with padding */
+}
