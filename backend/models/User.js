@@ -6,16 +6,14 @@ const UserSchema = new mongoose.Schema({
     username: { type: String, required: true, unique: true, trim: true },
     email: { type: String, required: true, unique: true, trim: true },
     password: { type: String, required: true },
-    
-    // The user's verified MetaMask address
     walletAddress: { type: String, required: true, unique: true },
 
-    // Fields for email verification
-    isVerified: { type: Boolean, default: false },
-    otp: { type: String },
-    otpExpires: { type: Date }
+    // We can keep this for future use, but we'll default it to true now.
+    isVerified: { type: Boolean, default: true },
+
+    // REMOVED: otp: { type: String },
+    // REMOVED: otpExpires: { type: Date }
 }, { 
-    // Automatically add 'createdAt' and 'updatedAt' fields
     timestamps: true 
 });
 

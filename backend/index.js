@@ -24,6 +24,16 @@ app.get('/', (req, res) => {
 
 // THIS LINE CONNECTS YOUR ROUTES
 app.use('/api/auth', require('./routes/auth'));
+app.get('/', (req, res) => {
+  res.send('Hello from the DLMS Backend!');
+});
+
+// Use the auth routes
+app.use('/api/auth', require('./routes/auth'));
+
+// --- ADD THIS LINE ---
+// Use the new book routes
+app.use('/api/books', require('./routes/book'));
 
 // Start the server
 app.listen(PORT, () => {
