@@ -76,7 +76,7 @@ function App() {
             const signature = await signer.signMessage(messageToSign);
             const registrationPayload = { username, email, password, walletAddress, signature, message: messageToSign };
             
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/register-with-wallet`, registrationPayload);
+            const response = await axios.post('${process.env.REACT_APP_API_URL}/api/auth/register-with-wallet', registrationPayload);
             
             alert(response.data.msg); // Show success message
             setView('login'); // Switch to login view
@@ -100,9 +100,10 @@ function App() {
         }
         try {
             const loginPayload = { identifier: loginIdentifier, password: loginPassword };
-            const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, loginPayload);
+            const response = await axios.post('${process.env.REACT_APP_API_URL}/api/auth/login', loginPayload);
             const { token, user } = response.data;
 
+            //fjfjf
             localStorage.setItem('token', token);
             localStorage.setItem('userInfo', JSON.stringify(user)); // Store user info
             setToken(token);
