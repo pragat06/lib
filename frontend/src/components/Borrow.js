@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { ethers } from 'ethers';
 import './Borrow.css';
+import React, { useState, useEffect } from 'react'; 
 
 // --- 1. PASTE YOUR DEPLOYED BSC TESTNET ADDRESS HERE ---
 // This is the new address you got after re-deploying the contract that accepts payments.

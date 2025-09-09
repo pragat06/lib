@@ -6,6 +6,7 @@ import axios from 'axios';
 import Sidebar from './components/sidebar'; // Import the Sidebar component
 import Search from './components/Search';
 import Borrow from './components/Borrow'; 
+import Admin from './components/Admin';
 import { FaBars } from 'react-icons/fa';      // Import the hamburger menu icon
 import './App.css';
 
@@ -45,15 +46,16 @@ function App() {
 
     // Effect to check for an existing session token on app load
     useEffect(() => {
-        const storedToken = localStorage.getItem('token');
-        if (storedToken) {
-            // In a real app, you would verify the token with the backend here.
-            // For now, we'll just restore the session.
-            setToken(storedToken);
-            // You would normally fetch user info here, but we'll use placeholder data
-            setUserInfo(JSON.parse(localStorage.getItem('userInfo')));
-        }
-    }, []);
+    const storedToken = localStorage.getItem('token');
+    // --- THIS LINE IS CRITICAL ---
+    const storedUserInfo = localStorage.getItem('userInfo');
+
+    if (storedToken && storedUserInfo) {
+        setToken(storedToken);
+        // --- THIS LINE IS CRITICAL ---
+        setUserInfo(JSON.parse(storedUserInfo)); // Loads the real user
+    }
+}, []);
 
     // --- HANDLER FUNCTIONS ---
 
@@ -103,7 +105,6 @@ function App() {
             const response = await axios.post(`${process.env.REACT_APP_API_URL}/api/auth/login`, loginPayload);
             const { token, user } = response.data;
 
-            //fjfjf
             localStorage.setItem('token', token);
             localStorage.setItem('userInfo', JSON.stringify(user)); 
             setToken(token);
@@ -141,6 +142,7 @@ function App() {
                  return <Borrow />;
             case 'return':
                 return <ReturnContent />;
+            case 'admin': return <Admin />;
             case 'dashboard':
             default:
                 return <DashboardContent username={userInfo?.username} />;
@@ -158,6 +160,7 @@ function App() {
                     isOpen={isSidebarOpen} 
                     onToggle={() => setSidebarOpen(!isSidebarOpen)}
                     onItemClick={(view) => setActiveView(view)}
+                    userInfo={userInfo}
                 />
                 <header className="app-header">
                     <div className="header-left">

@@ -76,7 +76,7 @@ router.post('/login', async (req, res) => {
         }
 
         const payload = {
-            user: { id: user.id, username: user.username, walletAddress: user.walletAddress }
+            user: { id: user.id, username: user.username, walletAddress: user.walletAddress,email: user.email }
         };
 
         jwt.sign(

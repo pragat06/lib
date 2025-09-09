@@ -1,35 +1,21 @@
 // File: backend/routes/books.js
 
 const express = require('express');
-const Book = require('../models/book'); // Import the Book model
-// We might add auth middleware later for the POST route
-// const auth = require('../middleware/auth'); 
+const Book = require('../models/b0ook');
+const authMiddleware = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
 // --- ROUTE 1: Add a New Book (Admin Only) ---
-// Method: POST /api/books
-// Note: We'll make this an open route for now for easy testing.
-router.post('/', async (req, res) => {
+// This route is already working, no changes needed.
+router.post('/', authMiddleware, async (req, res) => {
+    // ... your existing code for adding a book
     const { title, author, description, coverImage } = req.body;
-
-    if (!title || !author) {
-        return res.status(400).json({ msg: 'Please provide a title and author.' });
-    }
-
+    if (!title || !author) { return res.status(400).json({ msg: 'Please provide a title and author.' });}
     try {
-        const newBook = new Book({
-            title,
-            author,
-            description,
-            coverImage
-        });
-
-        // The pre-save middleware in Book.js will automatically assign the bookId
+        const newBook = new Book({ title, author, description, coverImage });
         const savedBook = await newBook.save();
-
         res.status(201).json(savedBook);
-
     } catch (err) {
         console.error(err.message);
         res.status(500).send('Server Error');
@@ -37,30 +23,38 @@ router.post('/', async (req, res) => {
 });
 
 
-// --- ROUTE 2: Get All Books (with Search) ---
-// Method: GET /api/books?search=...
+// --- CORRECTED ROUTE 2: Get All Books (with Search) ---
+// This version is more robust and handles the search logic cleanly.
 router.get('/', async (req, res) => {
     try {
-        const { search } = req.query; // Get the search term from the query parameter
-        let query = {};
+        // Get the 'search' query parameter from the URL, if it exists.
+        const { search } = req.query;
+        
+        let query = {}; // Start with an empty query to find all books
 
+        // If a search term was provided, build a regex query
         if (search) {
-            // Create a case-insensitive regex search for title or author
+            // This creates a "case-insensitive" search pattern
+            const searchRegex = new RegExp(search, 'i');
+
+            // This will search for the pattern in both the 'title' and 'author' fields
             query = {
                 $or: [
-                    { title: { $regex: search, $options: 'i' } },
-                    { author: { $regex: search, $options: 'i' } }
+                    { title: searchRegex },
+                    { author: searchRegex }
                 ]
             };
         }
 
-        // Find all books that match the query
-        const books = await Book.find(query).sort({ createdAt: -1 }); // Sort by newest first
+        // Execute the query against the 'books' collection and sort by newest first
+        const books = await Book.find(query).sort({ createdAt: -1 });
 
+        // Send the found books back as a JSON response
         res.json(books);
 
     } catch (err) {
-        console.error(err.message);
+        // If anything goes wrong with the database query, send a server error.
+        console.error("Error fetching books:", err.message);
         res.status(500).send('Server Error');
     }
 });

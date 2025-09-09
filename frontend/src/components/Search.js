@@ -1,73 +1,95 @@
 // File: src/components/Search.js
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
-import './Search.css'; // We will create this CSS file
+import { FaTimes } from 'react-icons/fa'; // Import an icon for the clear button
+import './Search.css'; // We will use the same CSS file
 
 const Search = () => {
-    const [books, setBooks] = useState([]);
+    // --- STATE MANAGEMENT ---
+    const [allBooks, setAllBooks] = useState([]); // Stores the original, complete list of books
+    const [filteredBooks, setFilteredBooks] = useState([]); // Stores the books to be displayed
     const [searchQuery, setSearchQuery] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true); // Start in loading state
     const [error, setError] = useState('');
 
-    // Function to fetch all books when the component first loads
-    const fetchAllBooks = async () => {
-        setIsLoading(true);
-        setError('');
-        try {
-            // Make a GET request to our backend's book endpoint
-            const response = await axios.get('http://localhost:5001/api/books');
-            setBooks(response.data);
-        } catch (err) {
-            setError('Could not fetch books. Please try again later.');
-            console.error(err);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-    // Use useEffect to call fetchAllBooks once when the component mounts
+    // --- DATA FETCHING ---
+    // This effect runs only once when the component is first mounted
     useEffect(() => {
-        fetchAllBooks();
-    }, []);
+        const fetchAllBooks = async () => {
+            setError('');
+            try {
+                const url = `${process.env.REACT_APP_API_URL}/api/books`;
+                const response = await axios.get(url);
+                setAllBooks(response.data); // Save the master list
+                setFilteredBooks(response.data); // Set the initial list to display
+            } catch (err) {
+                setError('Could not fetch books. The server might be down.');
+                console.error(err);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-    // Function to handle the search form submission
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        setIsLoading(true);
-        setError('');
-        try {
-            // Make a GET request with the search query as a URL parameter
-            const response = await axios.get(`http://localhost:5001/api/books?search=${searchQuery}`);
-            setBooks(response.data);
-        } catch (err) {
-            setError('Search failed. Please try again later.');
-            console.error(err);
-        } finally {
-            setIsLoading(false);
-        }
+        fetchAllBooks();
+    }, []); // The empty array [] means this effect never runs again
+
+    // --- INSTANT SEARCH LOGIC WITH DEBOUNCING ---
+    // This effect runs every time the 'searchQuery' changes
+    useEffect(() => {
+        // This is a common technique to prevent making too many requests while typing.
+        // We wait 300ms after the user stops typing before filtering.
+        const debounceTimer = setTimeout(() => {
+            if (searchQuery === '') {
+                // If the search bar is empty, show all books
+                setFilteredBooks(allBooks);
+            } else {
+                // Otherwise, filter the master list of books locally
+                const lowercasedQuery = searchQuery.toLowerCase();
+                const results = allBooks.filter(book => 
+                    book.title.toLowerCase().includes(lowercasedQuery) ||
+                    book.author.toLowerCase().includes(lowercasedQuery)
+                );
+                setFilteredBooks(results);
+            }
+        }, 300); // 300 millisecond delay
+
+        // This is a cleanup function. It clears the timer if the user types again.
+        return () => clearTimeout(debounceTimer);
+
+    }, [searchQuery, allBooks]); // Re-run this effect if the query or the master book list changes
+
+    const clearSearch = () => {
+        setSearchQuery('');
     };
 
+    // --- RENDER LOGIC ---
     return (
         <div className="search-container">
             <h1>Search for Books</h1>
-            <form className="search-form" onSubmit={handleSearch}>
-                <input 
-                    type="text"
-                    className="search-bar"
-                    placeholder="Search by title or author..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <button type="submit" className="search-button">Search</button>
-            </form>
+            <div className="search-form">
+                <div className="search-input-wrapper">
+                    <input 
+                        type="text"
+                        className="search-bar"
+                        placeholder="Search instantly by title or author..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                    />
+                    {searchQuery && (
+                        <button onClick={clearSearch} className="clear-search-btn">
+                            <FaTimes />
+                        </button>
+                    )}
+                </div>
+            </div>
 
-            {isLoading && <p>Loading books...</p>}
+            {isLoading && <p>Loading library...</p>}
             {error && <p className="error-message">{error}</p>}
 
             <div className="book-results">
-                {books.length > 0 ? (
-                    books.map((book) => (
+                {!isLoading && filteredBooks.length > 0 && (
+                    filteredBooks.map((book) => (
                         <div key={book.bookId} className="book-card">
                             <img src={book.coverImage} alt={`${book.title} cover`} className="book-cover" />
                             <div className="book-info">
@@ -83,8 +105,10 @@ const Search = () => {
                             </div>
                         </div>
                     ))
-                ) : (
-                    !isLoading && <p>No books found.</p>
+                )}
+                
+                {!isLoading && !error && filteredBooks.length === 0 && (
+                    <p>No books found. Try a different search term or add books in the admin panel.</p>
                 )}
             </div>
         </div>

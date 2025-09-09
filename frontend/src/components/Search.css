@@ -109,3 +109,27 @@
     border-radius: 15px;
     font-weight: bold;
 }
+/* --- ADD THESE STYLES TO THE BOTTOM OF Search.css --- */
+
+.search-input-wrapper {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+}
+
+.clear-search-btn {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #aaa;
+    font-size: 1.2rem;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.clear-search-btn:hover {
+    color: white;
+}

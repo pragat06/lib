@@ -1,0 +1,72 @@
+/* File: src/components/Admin.css */
+
+.admin-container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    padding: 1rem;
+}
+
+.book-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    padding: 2rem;
+    margin-top: 1rem;
+    background-color: #3a3f4a;
+    border-radius: 10px;
+}
+
+.book-form input[type="text"],
+.book-form textarea {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #555;
+    background-color: #282c34;
+    color: white;
+    font-size: 1rem;
+    box-sizing: border-box; /* Important for padding */
+}
+
+.book-form textarea {
+    min-height: 100px;
+    resize: vertical; /* Allow user to resize vertically */
+    font-family: inherit; /* Use the same font as other inputs */
+}
+
+/* We reuse the search-button style for consistency */
+.book-form .search-button {
+    padding: 12px 25px;
+    border-radius: 8px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: auto; /* Make button only as wide as its content */
+    align-self: flex-end; /* Align the button to the right */
+}
+
+.book-form .search-button:hover:not(:disabled) {
+    background-color: #0056b3;
+}
+.book-form .search-button:disabled {
+    background-color: #555;
+    cursor: not-allowed;
+}
+
+/* We can reuse these from other components */
+.success-message {
+    color: #77dd77;
+    margin-top: 1rem;
+    text-align: center;
+}
+
+.error-message {
+    color: #ff6961;
+    margin-top: 1rem;
+    text-align: center;
+}
