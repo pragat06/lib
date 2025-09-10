@@ -133,3 +133,12 @@
 .clear-search-btn:hover {
     color: white;
 }
+
+.book-card-clickable {
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+}
+
+.book-card-clickable:hover {
+    transform: scale(1.02); /* Adds a nice little zoom effect on hover */
+}

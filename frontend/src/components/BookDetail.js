@@ -1,20 +1,13 @@
-// File: src/components/BookDetail.js
 
 import React from 'react';
-import './BookDetail.css'; // We will create this
+import './BookDetail.css';
 
-const BookDetail = ({ book, onBorrowClick }) => {
-    // If no book is selected, don't render anything
+const BookDetail = ({ book, onBorrowClick, onBack }) => {
     if (!book) return null;
-
-    // This function will be called when the borrow button is clicked
-    const handleBorrow = () => {
-        // We pass the book's ID up to the App component
-        onBorrowClick(book.bookId);
-    };
 
     return (
         <div className="book-detail-container">
+            <button onClick={onBack} className="back-button">← Back to Search</button>
             <div className="book-detail-card">
                 <img src={book.coverImage} alt={`${book.title} cover`} className="book-detail-cover" />
                 <div className="book-detail-info">
@@ -22,23 +15,23 @@ const BookDetail = ({ book, onBorrowClick }) => {
                     <h3 className="book-detail-author">by {book.author}</h3>
                     <p className="book-detail-description">{book.description}</p>
                     
-                    {/* --- Borrow Button Logic --- */}
+                    {/* --- ADD THIS LINE TO DISPLAY THE BOOK ID --- */}
+                    <p className="book-detail-id">Book ID: <strong>{book.bookId}</strong></p>
+                    {/* ------------------------------------------- */}
+
                     {book.isAvailable ? (
-                        <button onClick={handleBorrow} className="borrow-now-btn">
-                            Borrow Now
+                        <button onClick={() => onBorrowClick(book.bookId)} className="borrow-now-btn">
+                            Borrow Now (0.01 tBNB)
                         </button>
                     ) : (
-                        <div className="status-unavailable">
-                            Unavailable
-                        </div>
+                        <div className="status-unavailable">Unavailable</div>
                     )}
                 </div>
             </div>
 
             <div className="reviews-section">
                 <h2>Reviews</h2>
-                {/* We can add a simple message for now. This can be built out later. */}
-                <p>No reviews yet for this book.</p>
+                <p>No reviews for this book yet.</p>
             </div>
         </div>
     );

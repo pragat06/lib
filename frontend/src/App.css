@@ -236,3 +236,66 @@ body {
     cursor: not-allowed;
     min-height: 51px; /* Matches the button's default height with padding */
 }
+/* Add this to the bottom of src/components/Search.css */
+.book-card-clickable { cursor: pointer; }
+
+.my-books-section {
+    margin-top: 3rem;
+    text-align: left;
+}
+
+.borrowed-books-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.borrowed-book-card {
+    display: flex;
+    gap: 1rem;
+    padding: 1rem;
+    background-color: #3a3f4a;
+    border-radius: 8px;
+    border-left: 5px solid #007bff; /* Blue for on-time */
+}
+
+.borrowed-book-card.overdue {
+    border-left-color: #dc3545; /* Red for overdue */
+}
+
+.borrowed-book-cover {
+    width: 80px;
+    height: 120px;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.borrowed-book-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.borrowed-book-info h4 {
+    margin: 0 0 0.5rem 0;
+}
+
+.borrowed-book-info p {
+    margin: 0;
+    color: #ccc;
+}
+
+.due-date {
+    margin-top: auto;
+    font-size: 0.9rem;
+}
+
+.overdue-tag {
+    margin-left: 10px;
+    background-color: #dc3545;
+    color: white;
+    padding: 3px 8px;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: bold;
+}

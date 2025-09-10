@@ -8,6 +8,7 @@ import Search from './components/Search';
 import Borrow from './components/Borrow'; 
 import Admin from './components/Admin';
 import { FaBars } from 'react-icons/fa';      // Import the hamburger menu icon
+import BookDetail from './components/BookDetail';
 import './App.css';
 
 // --- Placeholder Components for Different Views ---
@@ -18,15 +19,22 @@ const DashboardContent = ({ username }) => (
         <p>Use the menu on the left to navigate the library application.</p>
     </div>
 );
+
 //const SearchContent = () => <div><h1>Search for Books</h1><p>The book search interface will be built here.</p></div>;
 const BorrowContent = () => <div><h1>Borrow a Book</h1><p>The book borrowing interface will be built here.</p></div>;
 const ReturnContent = () => <div><h1>Return a Book</h1><p>The book returning interface will be built here.</p></div>;
+
+
 
 
 function App() {
     // --- STATE MANAGEMENT ---
     const [view, setView] = useState('login');
     const [token, setToken] = useState(localStorage.getItem('token'));
+
+    const [selectedBook, setSelectedBook] = useState(null); // To hold the book for the detail page
+    const [borrowBookId, setBorrowBookId] = useState(null); // To pass an ID to the borrow page
+
     
     // Form states
     const [username, setUsername] = useState('');
@@ -57,6 +65,16 @@ function App() {
     }
 }, []);
 
+
+ const handleBookSelect = (book) => {
+        setSelectedBook(book);
+        setActiveView('bookDetail'); // Switch to the new detail view
+    };
+
+    const handleBorrowClick = (bookId) => {
+        setBorrowBookId(bookId); // Set the ID to be pre-filled
+        setActiveView('borrow'); // Switch to the borrow view
+    };
     // --- HANDLER FUNCTIONS ---
 
     const handleRegisterSubmit = async (e) => {
@@ -137,9 +155,15 @@ function App() {
      const renderActiveView = () => {
         switch (activeView) {
             case 'search':
-                return <Search />; // <-- USE THE REAL SEARCH COMPONENT
+                 return <Search onBookSelect={handleBookSelect} />; // <-- USE THE REAL SEARCH COMPONENT
+            case 'bookDetail':
+                return <BookDetail 
+                            book={selectedBook} 
+                            onBorrowClick={handleBorrowClick} 
+                            onBack={() => setActiveView('search')} 
+                       />;
             case 'borrow':
-                 return <Borrow />;
+                 return <Borrow initialBookId={borrowBookId} />;
             case 'return':
                 return <ReturnContent />;
             case 'admin': return <Admin />;

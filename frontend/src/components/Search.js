@@ -1,28 +1,26 @@
 // File: src/components/Search.js
 
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { FaTimes } from 'react-icons/fa'; // Import an icon for the clear button
-import './Search.css'; // We will use the same CSS file
+import { FaTimes } from 'react-icons/fa';
+import './Search.css';
 
-const Search = () => {
-    // --- STATE MANAGEMENT ---
-    const [allBooks, setAllBooks] = useState([]); // Stores the original, complete list of books
-    const [filteredBooks, setFilteredBooks] = useState([]); // Stores the books to be displayed
+// --- CHANGE 1: Accept the 'onBookSelect' function as a prop ---
+const Search = ({ onBookSelect }) => {
+    const [allBooks, setAllBooks] = useState([]);
+    const [filteredBooks, setFilteredBooks] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
-    const [isLoading, setIsLoading] = useState(true); // Start in loading state
+    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState('');
 
-    // --- DATA FETCHING ---
-    // This effect runs only once when the component is first mounted
     useEffect(() => {
         const fetchAllBooks = async () => {
             setError('');
             try {
                 const url = `${process.env.REACT_APP_API_URL}/api/books`;
                 const response = await axios.get(url);
-                setAllBooks(response.data); // Save the master list
-                setFilteredBooks(response.data); // Set the initial list to display
+                setAllBooks(response.data);
+                setFilteredBooks(response.data);
             } catch (err) {
                 setError('Could not fetch books. The server might be down.');
                 console.error(err);
@@ -30,21 +28,14 @@ const Search = () => {
                 setIsLoading(false);
             }
         };
-
         fetchAllBooks();
-    }, []); // The empty array [] means this effect never runs again
+    }, []);
 
-    // --- INSTANT SEARCH LOGIC WITH DEBOUNCING ---
-    // This effect runs every time the 'searchQuery' changes
     useEffect(() => {
-        // This is a common technique to prevent making too many requests while typing.
-        // We wait 300ms after the user stops typing before filtering.
         const debounceTimer = setTimeout(() => {
             if (searchQuery === '') {
-                // If the search bar is empty, show all books
                 setFilteredBooks(allBooks);
             } else {
-                // Otherwise, filter the master list of books locally
                 const lowercasedQuery = searchQuery.toLowerCase();
                 const results = allBooks.filter(book => 
                     book.title.toLowerCase().includes(lowercasedQuery) ||
@@ -52,18 +43,14 @@ const Search = () => {
                 );
                 setFilteredBooks(results);
             }
-        }, 300); // 300 millisecond delay
-
-        // This is a cleanup function. It clears the timer if the user types again.
+        }, 300);
         return () => clearTimeout(debounceTimer);
-
-    }, [searchQuery, allBooks]); // Re-run this effect if the query or the master book list changes
+    }, [searchQuery, allBooks]);
 
     const clearSearch = () => {
         setSearchQuery('');
     };
 
-    // --- RENDER LOGIC ---
     return (
         <div className="search-container">
             <h1>Search for Books</h1>
@@ -90,17 +77,22 @@ const Search = () => {
             <div className="book-results">
                 {!isLoading && filteredBooks.length > 0 && (
                     filteredBooks.map((book) => (
-                        <div key={book.bookId} className="book-card">
-                            <img src={book.coverImage} alt={`${book.title} cover`} className="book-cover" />
-                            <div className="book-info">
-                                <h3 className="book-title">{book.title}</h3>
-                                <p className="book-author">by {book.author}</p>
-                                <p className="book-description">{book.description}</p>
-                                <div className="book-meta">
-                                    <span className="book-id">ID: {book.bookId}</span>
-                                    <span className={book.isAvailable ? 'status-available' : 'status-borrowed'}>
-                                        {book.isAvailable ? 'Available' : 'Borrowed'}
-                                    </span>
+                        // --- CHANGE 2: The entire card is now wrapped in a clickable div ---
+                        // When this div is clicked, it calls the onBookSelect function
+                        // and passes the specific 'book' object up to App.js.
+                        <div key={book.bookId} onClick={() => onBookSelect(book)} className="book-card-clickable">
+                            <div className="book-card">
+                                <img src={book.coverImage} alt={`${book.title} cover`} className="book-cover" />
+                                <div className="book-info">
+                                    <h3 className="book-title">{book.title}</h3>
+                                    <p className="book-author">by {book.author}</p>
+                                    <p className="book-description">{book.description}</p>
+                                    <div className="book-meta">
+                                        <span className="book-id">ID: {book.bookId}</span>
+                                        <span className={book.isAvailable ? 'status-available' : 'status-borrowed'}>
+                                            {book.isAvailable ? 'Available' : 'Borrowed'}
+                                        </span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
